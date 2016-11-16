@@ -1,6 +1,6 @@
 #仿百度文库完整项目
 
-演示地址:https://wenku.izerofx.com:8000/
+演示地址:[https://wenku.izerofx.com:8000/](https://wenku.izerofx.com:8000/)
 
 项目很多细节不完善，但大致可以用，主要用于学习参考用。
 
