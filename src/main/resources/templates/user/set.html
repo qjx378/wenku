@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>用户设置 - 分享文档</title>
+	<div th:replace="common/head">head</div>
+	<style type="text/css">
+	.header {top: 0; box-shadow: 0 1px 12px rgba(16, 6, 25, 0.2); z-index: 999;}
+	.main {width: 750px; min-height: 442px; margin: 4rem auto 4.2rem; padding: 1rem 3.25rem 1.2rem; background: #ffffff;}
+	.main .layui-btn {background-color: #1BAAE6;}
+	.footer {background-color: #ffffff;}
+	</style>
+</head>
+
+<body>
+<div th:replace="common/nav::nav(pageName='')">nav</div>
+<section style="background: #e5e8ec;overflow: hidden;padding-top: 35px;">
+	<div class="main layui-clear" style="min-height: 600px;">
+		<h2 class="page-title">帐号设置</h2>
+		<div class="fly-tab user-tab">
+			<span id="LAY-mine">
+			    <a href="javascript:;" class="tab-this" hash="info">我的资料</a>
+			    <a href="javascript:;" hash="avatar">头像</a>
+			    <a href="javascript:;" hash="pass">密码</a>
+			</span>
+		</div>
+
+		<div class="user-mine">
+			<div class="layui-form layui-form-pane mine-view" style="display:block;">
+				<form method="post">
+					<div class="layui-form-item">
+						<label for="L_email" class="layui-form-label">邮箱</label>
+						<div class="layui-input-inline">
+							<input type="text" autocomplete="off" th:value="${user.email}" class="layui-input" readonly>
+						</div>
+						<div class="layui-form-mid layui-word-aux">邮箱暂时不能修改</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="L_nickname" class="layui-form-label">昵称</label>
+						<div class="layui-input-inline">
+							<input type="text" id="L_nickname" name="nickName" required lay-verify="required" autocomplete="off" th:value="${user.nickName}" class="layui-input">
+						</div>
+						<div class="layui-inline">
+							<div class="layui-input-inline">
+								<input type="radio" name="sex" value="1" th:checked="${user.sex == 1}" title="男">
+								<input type="radio" name="sex" value="0" th:checked="${user.sex == 0}" title="女">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="L_city" class="layui-form-label">城市</label>
+						<div class="layui-input-inline">
+							<input type="text" id="L_city" name="city" autocomplete="off" placeholder="所在城市" th:value="${user.city}" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label for="L_sign" class="layui-form-label">签名</label>
+						<div class="layui-input-block">
+							<textarea placeholder="随便写些什么刷下存在感" id="L_sign" name="sign" autocomplete="off" class="layui-textarea" style="height: 80px;" th:text="${user.sign}"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+					</div>
+				</form>
+			</div>
+
+			<div class="layui-form layui-form-pane mine-view">
+				<div class="layui-form-item">
+					<div class="avatar-add">
+						<p>建议尺寸168*168，支持jpg、png、gif，最大不能超过30KB</p>
+						<div class="upload-img">
+							<input type="file" name="file" id="LAY-file" lay-title="上传头像">
+						</div>
+						<img th:src="${user.avatar} ? @{/}+${user.avatar} : @{/static/images/default_avatar.png}">
+						<span class="loading"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form layui-form-pane mine-view">
+				<form th:action="@{/user/repass}" method="post">
+					<div class="layui-form-item">
+						<label for="L_nowpass" class="layui-form-label">当前密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="L_nowpass" name="nowpass" required lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="L_pass" class="layui-form-label">新密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="L_pass" name="pass" required lay-verify="pass" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">6到16个字符</div>
+					</div>
+					<div class="layui-form-item">
+						<label for="L_repass" class="layui-form-label">确认密码</label>
+						<div class="layui-input-inline">
+							<input type="password" id="L_repass" name="repass" required lay-verify="repass" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div th:replace="common/footer">footer</div>
+</body>
+<script type="text/javascript">
+    var BASE_URL = '[[@{/}]]';
+</script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script type="text/javascript">
+
+layui.use(['layer', 'element', 'form', 'upload'], function(){
+    var $ = layui.jquery
+    ,layer = layui.layer
+    ,element = layui.element()
+    ,form = layui.form()
+    ,upload = layui.upload;
+    
+    
+    var gather = {
+    
+	    //Ajax
+		json: function(url, data, success, options){
+			var that = this;
+	      	options = options || {};
+	      	data = data || {};
+	      	return $.ajax({
+	        	type: options.type || 'post',
+	        	dataType: options.dataType || 'json',
+	        	data: data,
+	        	url: url,
+	        	success: function(res){
+	          		if(res.status === 0) {
+	            		success && success(res);
+	          		} else {
+	            		layer.msg(res.msg||res.code, {shift: 6});
+	          		}
+	        	}, error: function(e){
+	          		options.error || layer.msg('请求异常，请重试', {shift: 6});
+	        	}
+	      	});
+	    }
+	    ,form: {}
+    }
+    ,dom = {
+         mine: $('#LAY-mine')
+        ,mineview: $('.mine-view')
+        ,minemsg: $('#LAY_minemsg')
+        ,infobtn: $('#LAY_btninfo')
+    }
+    
+    //显示当前tab
+    gather.tabshow = function(index, hash){
+        var a = dom.mine.find('a');
+        if(hash){
+            a.each(function(i, item){
+                if($(this).attr('hash') === hash){
+	                index = i;
+		           return false;
+		        }
+            });
+        }
+	    a.eq(index).addClass('tab-this').siblings().removeClass('tab-this');
+	    dom.mineview.hide();
+	    dom.mineview.eq(index).show();
+    };
+	
+    dom.mine.find('a').on('click', function(){
+        var othis = $(this), index = othis.index();
+	    var type = othis.attr('type'), hash = othis.attr('hash');
+	    if(othis.attr('href') !== 'javascript:;'){
+            return;
+	    }
+	    
+        gather.tabshow(index);
+        if(hash){
+           location.hash = hash;
+       }
+    });
+    dom.mine[0] && gather.tabshow(0, location.hash.replace(/^#/, ''));
+	
+    //根据ip获取城市
+    if($('#L_city').val() === ''){
+        $.getScript('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', function(){
+            $('#L_city').val(remote_ip_info.city);
+        });
+    }
+    //上传图片
+    if($('.upload-img')[0]){
+        var avatarAdd = $('.avatar-add');
+        upload({
+           elem: '.upload-img input'
+           ,method: 'post'
+           ,url: BASE_URL + 'user/upload/'
+           ,before: function(){
+               avatarAdd.find('.loading').show();
+           }
+           ,success: function(res){
+               if(res.code === 0){
+                    $.post(BASE_URL+'/user/set/', {
+		                  avatar: res.url
+		            }, function(res){
+		                  location.reload();
+		            });
+               } else {
+                   layer.msg(res.msg, {icon: 5});
+               }
+               avatarAdd.find('.loading').hide();
+              }
+           ,error: function(){
+               avatarAdd.find('.loading').hide();
+           }
+        });
+    }
+    
+    form.verify({
+        pass: [
+            /^[\S]{6,12}$/
+            ,'密码必须6到12位，且不能出现空格'
+        ]
+        ,repass: function(value){
+            if(!/^[\S]{6,12}$/.test(value)){
+                return '确认密码必须6到12位，且不能出现空格';
+            }
+            if(value != $('#L_pass').val()){
+                return '两次输入的密码不一致';
+            }
+        }
+    });
+    
+    //表单提交
+	form.on('submit(*)', function(data){
+		var action = $(data.form).attr('action'), button = $(data.elem);
+		gather.json(action, data.field, function(res){
+	      	if(res.status == 0){
+                layer.msg('修改成功', {
+                    icon: 1
+                    ,time: 1000
+                    ,shade: 0.1
+                }, function(){
+                    location.reload();
+                });
+	      	};
+    	});
+	    return false;
+	});
+});
+</script>
+</html>

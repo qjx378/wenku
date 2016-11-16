@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds">
+	<!-- appender -->
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoder 默认配置为PatternLayoutEncoder -->
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名 -->
+			<FileNamePattern>/logs/wenku-demo.%d{yyyy-MM-dd}.log</FileNamePattern>
+			<!--日志文件保留天数 -->
+			<MaxHistory>2</MaxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger.%M - %m%n
+			</pattern>
+		</encoder>
+		<!--日志文件最大的大小 -->
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	
+	<!-- root logger -->
+	<root level="debug">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+	</root>
+	
+ 	<logger name="org.springframework" level="warn"/>
+ 	<logger name="org.hibernate" level="warn"/>
+ 	<logger name="org.jboss" level="warn"/>
+ 	<logger name="org.apache.http" level="warn"/>
+ 	<logger name="org.zbus" level="warn"/>
+ 	<logger name="net.sf.ehcache" level="warn"/>
+ 	<logger name="org.thymeleaf" level="warn"/>
+ 	<logger name="io.swagger" level="warn"/>
+ 	<logger name="springfox.documentation" level="warn"/>
+ 	
+	<!-- logback self -->
+	<logger name="logback" />
+	
+	<!-- custom logger -->
+	<logger name="com.izerofx" level="debug" additivity="false">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file" />
+	</logger>
+</configuration>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>阅读 - 分享文档</title>
+	<div th:replace="common/head">head</div>
+	<style type="text/css">
+    .header {top: 0; box-shadow: 0 1px 12px rgba(16, 6, 25, 0.2); z-index: 999;}
+    .layui-btn {background-color: #1BAAE6; border-radius: 5px;}
+    .clearfix:after {clear: both; content: ' '; display: block; font-size: 0; line-height: 0; visibility: hidden; width: 0; height: 0;}
+	.fl {float: left;}
+	.fr { float: right;}
+    .footer {background-color: #ffffff;}
+</style>
+</head>
+
+<body>
+<div th:replace="common/nav::nav(pageName='doc')">nav</div>
+
+<section style="background: #e5e8ec; overflow: hidden; padding-top: 75px;">
+    <div class="main clearfix" style="background-color: #fff;">
+        <div class="uploadmain">
+            <div class="bartile"><i class="iconfont icon-yunupload"></i> 上传文档</div>
+            <div class="updiv">
+                <div class="c" id="up_area">
+                    <div class="upbtn">
+                        <a id="selectfiles" class="selectfiles layui-btn" href="javascript:;">
+                            <i class="iconfont icon-shangchuan"></i> 分享我的文档
+                        </a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="uptip">
+                <div class="tile">温馨提示</div>
+                <div>
+                    <div>1.您可以上传日常积累和撰写的文档资料，如模板、总结，文档≤60MB，支持多种文档类型：</div>
+                    <div class="ext clearfix">
+                        <span class="doc">doc,docx</span>
+                        <span class="ppt">ppt,pptx</span>
+                        <span class="xls">xls,xlsx</span>
+                        <span class="pdf">pdf</span>
+                        <span class="txt">txt</span>
+                    </div>
+                    <div>2.上传涉及侵权内容的文档将会被移除。</div>
+                    <div>3.本站只用作演示。</div>
+                    <div>4.为营造绿色网络环境，严禁上传含有淫秽色情及低俗信息等文档。</div>
+                    <div>5.最终解释权归本站所有。</div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        
+            <div class="queues" style="display: none;">
+                <div class="info clearfix">
+                    <div class="fl">
+                        <p class="p1">您已成功上传 <span id="suc">0</span> 份文档，失败 <span id="fals">0</span> 份。</p>
+                        <p class="p2">请填写文档信息后点击“保存编辑”。</p>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+        
+                <div id="container">
+                    <div class="clear"></div>
+                    <div id="allsel" style="position:relative; border-bottom: solid 1px #e8e8f0;">
+                        <div class="editv" style="display:block; position:static; padding:0; border-bottom:none">
+                            <div class="inf fr" style="width:400px">
+                                <div class="line clearfix">
+                                    <div class="w fl">&nbsp;</div>
+                                    <div class="fl">
+                                        <button class="btn layui-btn" onclick="allsave()">保存编辑</button>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+        
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="barbtn">
+                    <div class="clear"></div>
+                </div>
+            </div>
+        
+        </div>
+        
+        <div id="alluploadsuc" style="display:none">
+            <div class="cont1">
+                <p style="padding:10px 0">
+                    <span style="color:#666; font-size: 18px; font-weight:bold; padding-right:10px;">恭喜！文档上传成功</span>
+                    <a class="blue" th:href="@{/doc/upload/}">继续上传 &gt;</a>
+                </p>
+                <p>
+                    <span style="color:#a7a7a7;padding-right:10px;">注：如文档含有盗版内容，请立刻删除 </span>
+                    <a class="blue" th:href="@{/user/}">查看已上传文档 &gt;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="common/footer">footer</div>
+</body>
+<script type="text/javascript">
+var BASE_URL = '[[@{/}]]';
+</script>
+<script src="//lib.baomitu.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//lib.baomitu.com/plupload/2.1.9/plupload.full.min.js"></script>
+<script th:src="@{/static/js/layer/layer.js}"></script>
+<script th:src="@{/static/js/upload.js}"></script>
+<script type="text/javascript">
+$(function () {
+    //radio单击事件
+    $(".radio").on("click", function () {
+        var t = $(this);
+        $("b",t.parent()).removeClass("check")
+        $("b", t).addClass("check")
+        $("input", t).prop({ checked: true });
+    });
+
+    $(".dropbox > em,.dropbox > span,.dropboxs > em,.dropboxs > span").on("click", function () {
+        var m= $(this).parent().find(".droplist");
+        if (m.is(":visible"))
+            $(this).parent().find(".droplist").hide();
+        else
+            $(this).parent().find(".droplist").show();
+    });
+
+    $(".dropbox > ul > li").on("click", function () {
+        var t = $(this);
+        t.parent().hide().find(".check").removeClass("check");
+        t.parent().parent().find("input").val(t.attr("data-val"))
+        t.addClass("check")
+        t.parent().parent().find("span").html(t.html())
+    })
+
+    $(".droplist  > .fis > li").on("click",function(){
+        var t = $(this);
+        t.parent().find(".check").removeClass("check");
+        t.addClass("check")
+        t.parent().parent().find("input").val(t.attr("data-val"))
+        var htxt=t.parent().parent().parent().find(".htxt")
+        htxt.html(t.html()+" &raquo; " );
+
+        t.parent().parent().parent().parent().parent().parent().parent().find(".serr").html("");
+
+        var s= t.parent().parent().find(".sec");
+        s.empty();
+        var pid=parseInt(t.attr("data-val"));
+        $.each(sc,function(i){
+            if(sc[i].Other== pid)
+                s.append("<li data-val='"+sc[i].Id+"'>"+sc[i].Name+"</li>")
+        });
+
+       s.find("li").on("click",function(){
+            var tt = $(this);
+            tt.parent().find(".check").removeClass("check");
+            tt.addClass("check")
+            tt.parent().parent().hide();
+            htxt.html(t.html()+" &raquo; "+tt.html() );
+            tt.parent().parent().find("input").val(t.attr("data-val")+","+tt.attr("data-val"))
+        });
+    });
+
+    $("#allsel .doup").on("click",function(){
+        $("#allsel").hide();
+    });
+
+    var count = 0;
+    var uploader = new plupload.Uploader({
+        runtimes: 'html5,flash,silverlight,html4',
+        browse_button: 'selectfiles',
+        url: BASE_URL + 'doc/upload/',
+        flash_swf_url: BASE_URL + 'static/js/plupload/2.1.9/js/Moxie.swf',
+        silverlight_xap_url: BASE_URL + 'static/js/plupload/2.1.9/js/Moxie.xap',
+        drop_element: 'up_area',
+        filters: {
+            max_file_size: '60mb',
+            mime_types: [
+                { title: "选择文件", extensions: "doc,ppt,xls,pdf,docx,pptx,xlsx" }
+            ],
+            prevent_duplicates : true
+        },
+
+        init: {
+            PostInit: function() {
+
+            },
+            FilesAdded: function(up, files) {
+               
+                if ($(".upitm").length-$(".err").length > 9){
+                    return;
+                }
+
+                plupload.each(files, function(file) {
+                    count = count + 1;
+                    $('<div id="' + file.id + '" class="upitm">\
+                        <ul class="clearfix">\
+                            <li class="tag"><em>' + count + '</em></li>\
+                            <li class="img"><img src="' + BASE_URL + 'static/images/' + extpic(file.name) + '.png" /></li>\
+                            <li class="til">' + file.name + '</li>\
+                            <li class="state"><span></span></li>\
+                            <li class="percent"><span>0%</span></li>\
+                            <li class="edit"><span>编辑 <i class="layui-icon" style="font-size: 16px; color: #0066cc;vertical-align: sub;">&#xe61a</i></span></li>\
+                            <li class="del"><i class="iconfont icon-shanchu"></i></li>\
+                        </ul>\
+                        <div class="clear"></div>\
+                        <div class="ing"></div>\
+                    </div>').appendTo("#container");
+                    up.start();
+                    $("#" + file.id).find(".del > i").on("click", function () {
+                        up.removeFile(file);
+                        remove(file.id);
+                    })
+                });
+            },
+            BeforeUpload: function(up, file) {
+                $(".uptip").hide();
+                $(".queues").show();
+                $("#"+file.id).addClass("ing");
+            } ,
+            UploadProgress: function(up, file) {
+                $("#" + file.id).find(".ing").css("width", (978 * (file.percent / 100.0)) + "px").find(".percent").html("<span>" + file.percent + "%</span>");
+                $("#" + file.id).find(".percent").html("<span>" + file.percent + "%</span>");
+            },
+            FileUploaded: function(up, file, rep) {
+                var d = $.parseJSON(rep.response)
+              if(d.status === 1){
+                  $("#" + file.id).removeClass("ing").addClass("err").find(".state").html("<span>" + d.msg + "</span>").find("span").show();
+                  var es = $("#fals").html();
+                  $("#fals").html( parseInt(es)+1)
+              } else {
+                  $("#" + file.id).removeClass("ing").addClass("upok").find(".state").html("<span>上传成功</span>").find("span").show();
+                  var es = $("#suc").html();
+                  $("#suc").html(parseInt(es) + 1);
+                  $("#" + file.id).attr("date-id", d.fileInfo.id);
+                  $("#" + file.id).attr("date-code", d.fileInfo.hash);
+                  $("#" + file.id).find(".edit > span").on("click", function (d) {
+                      $("#" + file.id).hide();
+                      $("#edit" + file.id).show();
+                  }).show();
+                  addedit(file)
+                  $("#" + file.id).attr("date-id", d.fileInfo.id);
+                  $("#" + file.id).attr("date-code", d.fileInfo.hash);
+                  $("#edit" + file.id).attr("date-doc-id", null);
+                  $("#edit" + file.id).attr("date-id", d.fileInfo.id);
+                  $("#edit" + file.id).attr("date-code", d.fileInfo.hash);
+              }
+            },
+            Error: function(up, err) {
+                $("#" + err.file.id).removeClass("ing").addClass("err").find(".state").html("<span>" + err.message + "</span>").find("span").show();
+                var es = $("#fals").html();
+                $("#fals").html(parseInt(es) + 1)
+            }
+        }
+    });
+
+    uploader.init();
+});
+
+/**
+ * 移除指定的文件
+ * @param id
+ */
+function remove(id){
+    var dom = $("#" + id);
+    var dateId = dom.attr("date-id");
+    if(dateId != undefined) {
+        $.ajax({
+            url: BASE_URL + 'doc/delfile/',
+            type: "post",
+            data: {
+                id: dateId
+            },
+            success: function (d) {
+                if(d.status === 0){
+                    $("#edit" + id).remove();
+                    dom.remove();
+                    var sucNum = parseInt($("#suc").text());
+                    if(sucNum - 1 === 0){
+                        $("#suc").text(0);
+                        $(".queues").hide();
+                        $(".uptip").show();
+                    }else{
+                        $("#suc").text(sucNum - 1);
+                    }
+                }else{
+                    layer.alert(d.msg);
+                }
+            }
+        });
+    }
+}
+
+/**
+ * 保存编辑内容
+ * @param id
+ */
+function postEdit(id){
+    var models = [];
+    var berr = false;
+    var t = $("#edit" + id);
+    var docId = t.attr("date-doc-id");
+    var fileId = t.attr("date-id");
+    var title = t.find("[name='title']").val();
+    var doctype = t.find(".rd2").prop("checked")
+    var model = {
+        id: docId,
+        fileId: fileId,
+        title: title,
+        type: doctype ? 2 : 1
+    };
+    models.push(model);
+
+    if (!berr && models.length > 0){
+        $.ajax({
+            url: BASE_URL + 'doc/save/',
+            type: 'post', 
+            dataType: "json",
+            data: models[0],
+            success: function(d){
+                if(d.status === 0){
+                    $(".upitm[date-id='" + fileId + "']").show().addClass("suc").removeClass("upok").find(".state").html("<span>编辑成功</span>");
+                    $(".edivs[date-id='" + fileId + "']").hide();
+                    t.attr("date-doc-id", d.id);
+                }else{
+                    layer.alert(d.msg);
+                }
+            }
+        })
+    }
+    return berr;
+}
+
+/**
+ * 增加编辑
+ * @param file
+ */
+function addedit(file){
+    var taghtml = $("#" + file.id).find(".tag > em").html();
+    var shtml = '<div id="edit'+file.id+'" class="edivs" style="display:none; padding: 6px 0; border-bottom:solid 1px #eee; position: relative"><div  class="editv clearfix" style="display:block; position:static;padding:0;border-bottom:none">\
+            <div class="tag"><em>'+taghtml+'</em></div>\
+            <div class="doc fl">\
+                <div class="line clearfix">\
+                    <div class="w fl">标题：</div>\
+                    <div class="fl" style="margin-left: 10px;"><input class="txt bd" name="title" value="'+file.name.split('.')[0]+'"  maxlength="100"/></div>\
+                    <div class="clear"></div>\
+                </div>\
+                <div class="line clearfix">\
+                    <div class="w fl">类型：</div>\
+                    <div class="fl" style="margin-left: 10px;">\
+                        <div class="fl radio " style="margin-right:20px;">\
+                            <b class="check"><input type="radio" checked name="doctype" class="rd1" value="1" /></b> 公开文档\
+                        </div>\
+                        <div class="fl radio">\
+                            <b><input type="radio" name="doctype" class="rd2" value="2" /></b> 私有文档\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="inf fr">\
+                <div class="line clearfix">\
+                        <div class="w fl">&nbsp;</div>\
+                        <div class="fl">\
+                            <button class="btn layui-btn" onclick="postEdit(\''+file.id+'\')" >保存编辑</button><span class="serr"></span>\
+                            <span class="doup fr" style="display:block; position:static; padding-left:100px;">收起 <i class="layui-icon" style="font-size: 16px; color: #0066cc;">&#xe619;</i></span></span>\
+                        </div><div class="clear"></div>\
+                    </div>\
+                <div class="clear"></div>\
+            </div>\
+            <div class="clear"></div>\
+        </div>\
+        </div>';
+
+    var h = $(shtml);
+    h.insertAfter("#"+file.id);
+    var alld=$("#allsel")
+    alld.find(".folder").clone(true,true).appendTo(h.find(".folderd"));
+
+    var edit= $("#edit" + file.id);
+    edit.find(".doup").on("click", function (d) {
+        $("#edit" + file.id).hide();
+        $("#" + file.id).show();
+    });
+    
+    edit.find(".radio").on("click", function () {
+        var t = $(this);
+        edit.find(".radio > b").removeClass("check")
+        $("b", t).addClass("check")
+        $("input", t).prop({ checked: true });
+    });
+}
+</script>
+</html>

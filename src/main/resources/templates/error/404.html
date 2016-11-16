@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>404 - 分享文档</title>
+    <div th:replace="common/head">head</div>
+    <style type="text/css">
+    h1, h2, h3 {font-size: 14px; font-weight: 400;}
+    .header {position: inherit; top: 0; box-shadow: 0 1px 12px rgba(16, 6, 25, 0.2);}
+    </style>
+</head>
+
+<body>
+<div th:replace="common/nav::nav(pageName='')">nav</div>
+<div class="main">
+  <div class="fly-none">
+    <h2><i class="iconfont icon-404"></i></h2>
+    <p>页面或者数据被 小虾米 运到火星了，啥都看不到了…</p>
+  </div>
+</div>
+<div th:replace="common/footer">footer</div>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var BASE_URL = /*[[@{/}]]*/;
+    /*]]>*/
+</script>
+<script th:src="@{/static/layui/layui.js}"></script>
+</html>

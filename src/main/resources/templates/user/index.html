@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>用心中心 - 分享文档</title>
+	<div th:replace="common/head">head</div>
+	<style type="text/css">
+	.header {top: 0; box-shadow: 0 1px 12px rgba(16, 6, 25, 0.2); z-index: 999;}
+	.main {min-height: 442px; margin: 4rem auto 4rem; padding: 1rem 3.25rem 1.2rem; background: #ffffff;}
+	.footer {background-color: #ffffff;}
+	</style>
+</head>
+
+<body>
+<div th:replace="common/nav::nav(pageName='')">nav</div>
+<section style="background: #e5e8ec;overflow: hidden;padding-top: 35px;">
+    <div class="main layui-clear">
+        <h2 class="page-title">用心中心</h2>
+        <div class="wrap">
+            <div class="content">
+                <div class="fly-tab user-tab">
+                    <span id="LAY-mine">
+                        <a href="javascript:;" class="tab-this">我的分享（<cite>0</cite>）</a>
+                        <a th:href="@{/user/u/}+${session.user.id}">我的主页</a>
+                    </span>
+                </div>
+                <ul class="fly-list">
+                    
+                </ul>
+                <div id="LAY-page"></div>
+            </div>
+        </div>
+
+        <div class="edge">
+            <div class="user-about">
+                <a th:href="@{/user/set#avatar}" title="修改头像">
+                    <img th:src="${session.user.avatar} ? @{/}+${session.user.avatar} : @{/static/images/default_avatar.png}" />
+                </a>
+                <p>
+                    <span style="color:#333" th:text="${session.user} ? ${session.user.nickName}:''">小虾米</span>
+                </p>
+                <p>
+                    <span th:text="'加入时间：'+${#dates.format(session.user.createTime,'yyyy-MM-dd')}">加入时间：2016-10-26</span>
+                </p>
+                <p>
+                    <span th:text="'城市：'+${session.user.city}">城市：广州</span>
+                    <span th:text="'城市：'+${session.user.sex} == 0 ? '女': '男'">性别：男</span>
+                </p>
+                <div class="user-looklog" style="padding-bottom:200px;">
+                    <h3>最近访客</h3>
+                    <span th:if="${not #lists.isEmpty(visitor_list)}" th:each="item: ${visitor_list}">
+                        <a th:href="@{/user/u/}+${item.visitorUserId}">
+                            <img th:src="${item.avatar} ? @{/static}+${item.avatar} : @{/static/images/default_avatar.png}" />
+                            <cite th:text="${item.nickName}">小虾米</cite>
+                            <i izerofx:prettytime="${item.createTime}">刚刚</i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div th:replace="common/footer">footer</div>
+</body>
+<script type="text/javascript">
+var BASE_URL = '[[@{/}]]';
+</script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script type="text/javascript">
+layui.use(['layer', 'laytpl', 'laypage'], function(){
+    var $ = layui.jquery
+    ,layer = layui.layer
+    ,laytpl = layui.laytpl
+    ,laypage = layui.laypage;
+    
+    var gather = {
+	    //Ajax
+		json: function(url, data, success, options){
+			var that = this;
+	      	options = options || {};
+	      	data = data || {};
+	      	return $.ajax({
+	        	type: options.type || 'post',
+	        	dataType: options.dataType || 'json',
+	        	data: data,
+	        	url: url,
+	        	success: function(res){
+	          		if(res.status === 0) {
+	            		success && success(res);
+	          		} else {
+	            		layer.msg(res.msg||res.code, {shift: 6});
+	          		}
+	        	}, error: function(e){
+	          		options.error || layer.msg('请求异常，请重试', {shift: 6});
+	        	}
+	      	});
+	    }
+    }
+    ,tpl = '{{# for(var i = 0; i < d.list.length; i++){ }}\
+        <li class="fly-list-li">\
+            <dl>\
+                <a href="'+BASE_URL+'doc/P-{{=d.list[i].id}}.html" target="_blank" class="fly-list-thumb" style="display: block; background: url('+BASE_URL+'{{d.list[i].thumPath}}) 50% 50% no-repeat rgb(255, 255, 255); background-size: 100px;">\
+                    <em>P.{{d.list[i].pages}}</em>\
+                </a>\
+                <h2 class="fly-tip">\
+                    <a href="'+BASE_URL+'doc/P-{{=d.list[i].id}}.html" target="_blank">{{=d.list[i].title}}</a>\
+                    <div class="layui-btn layui-btn-mini layui-btn-danger" style="vertical-align: middle;">删除</div>\
+                </h2>\
+                <p class="docintro">{{=d.list[i].summary}}</p>\
+                <p class="other">\
+                    <span>类型：{{(d.list[i].type) == 1 ? "公开文档" : "私有文档"}}</span>\
+                    <span>格式：{{(d.list[i].ext).toUpperCase()}}</span>\
+                    <span>状态：{{=docConState(d.list[i].conState)}}</span>\
+                    <span>分享于 {{ d.list[i].createTime }}</span>\
+                    <span class="fly-list-hint">\
+                        <i class="iconfont icon-liulan" title="人气"></i> {{d.list[i].viewCount}}\
+                    </span>\
+                </p>\
+            </dl>\
+        </li>\
+      {{# } }}'
+      ,dom = {
+	     mine: $('#LAY-mine')
+	    ,mineview: $('.fly-list')
+	    ,minemsg: $('#LAY_minemsg')
+	    ,infobtn: $('#LAY_btninfo')
+	  };
+      
+      
+    function view(res){
+        var html = laytpl(tpl).render(res);
+        dom.mine.find('a').eq(0).find('cite').html(res.total);
+        dom.mineview.eq(0).html(res.list.length === 0 ? '<div class="fly-msg">没有相关数据</div>' : html);
+    }
+      
+    function page(now){
+        var curr = now || 1;
+        gather.json(BASE_URL + 'user/doc_list/', {
+            u: '[[${session.user.id}]]',
+            p: curr
+        }, function(res){
+              view(res);
+	          now || laypage({
+	            cont: 'LAY-page'
+	            ,pages: res.pages
+	            ,skin: 'fly'
+	            ,curr: curr
+	            ,jump: function(e, first){
+	               if(!first){
+	                   page(e.curr);
+	               }
+	            }
+	          });
+        });
+    }
+    
+    page();
+});
+
+//转换状态
+function docConState(state){
+    var result = "未转换";
+    switch(state){
+        case 1:
+          result = "转换中";
+          break;
+        case 2:
+          result = "已转换";
+          break;
+        case 3:
+          result = "转换失败";
+          break;
+        default:
+          result = "未转换";
+    }
+    return result;
+}
+</script>
+</html>

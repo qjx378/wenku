@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>首页</title>
+    <div th:replace="common/head">head</div>
+</head>
+
+<body>
+<div th:replace="common/nav::nav(pageName=index)">nav</div>
+
+<div class="banner">
+	<div class="img">
+		<img th:src="@{/static/images/banner.jpg}" />
+	</div>
+	<div class="container">
+		<div class="container-font" style="margin-bottom:140px;">
+			<h1 class="en-h1">与世界分享你的知识</h1>
+			<p class="en-p">让每个人平等地提升自我</p>
+		</div>
+		<div class="site-upload">
+	      <a th:href="@{/doc/upload/}" class="layui-inline site-up">
+	        <cite class="layui-icon">&#xe62f;</cite>立即分享
+	      </a> 
+	    </div>
+	</div>
+</div>
+<div th:replace="common/footer">footer</div>
+</body>
+<script type="text/javascript">
+    var BASE_URL = '[[@{/}]]';
+</script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script type="text/javascript">
+layui.use(['layer', 'element'], function(){
+    var $ = layui.jquery
+    ,layer = layui.layer
+    ,element = layui.element();
+    
+    $(window).scroll(function() {
+        var a = $(this).scrollTop();
+        if (a > 0) {
+            $(".header").removeClass("no-bg");
+        } else {
+            $(".header").addClass("no-bg");
+        }
+    });
+    
+    layer.open({
+        type: 1,
+        title: false,
+        shade: [0],
+        area: ['340px', '215px'],
+        offset: 'rb',
+        time: 5000,
+        closeBtn: 0,
+        anim: 2,
+        shadeClose: false,
+        content: '<div style="background-color:#E55D40; color:#fff;line-height:200px; text-align:center;">本站所有内容只作为演示用</div>'
+    });
+});
+</script>
+</html>

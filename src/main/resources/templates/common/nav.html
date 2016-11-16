@@ -1,0 +1,35 @@
+<!--/*******导航栏*******/-->
+<div class="layui-header header" th:fragment="nav(pageName)" th:classappend="${pageName == 'index'} ? 'no-bg'">
+    <div class="layui-main">
+        <a class="logo" th:href="@{/}">
+            <img th:src="@{/static/images/logo.png}" alt="分享文档">
+        </a>
+        <ul class="layui-nav">
+            <li class="layui-nav-item" th:classappend="${pageName == 'index'} ? 'layui-this'">
+                <a th:href="@{/}">首页</a>
+            </li>
+            <li class="layui-nav-item" th:classappend="${pageName == 'doc'} ? 'layui-this'">
+                <a th:href="@{/doc/}">文档</a>
+            </li>
+        </ul>
+        <div class="nav-user">
+            <a class="unlogin" th:href="@{/login/}" th:remove="${session.user} ? all : none">
+                <i class="iconfont icon-wode"></i>
+            </a>
+            <span th:remove="${session.user}?all:none">
+                <a th:href="@{/login/}">登入</a>
+                <a th:href="@{/reg/}">注册</a>
+            </span>
+            
+            <!-- 登入后的状态 -->
+            <a class="avatar" th:href="@{/user/}" th:remove="${session.user} ? none : all">
+	        	<img th:src="${session.user.avatar} ? @{/}+${session.user.avatar} : @{/static/images/default_avatar.png}" />
+	        	<cite th:text="${session.user}?${session.user.nickName}:''">小虾米</cite>
+            </a>
+            <div class="nav" th:remove="${session.user} ? none : all">
+	        	<a th:href="@{/user/set}"><i class="iconfont icon-shezhi"></i>设置</a>
+	        	<a th:href="@{/logout}"><i class="iconfont icon-tuichu"></i>退了</a>
+            </div>
+        </div>
+    </div>
+</div>

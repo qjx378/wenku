@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title th:text="${docBaseInfo.title}+' - 分享文档'">阅读 - 分享文档</title>
+	<div th:replace="common/head">head</div>
+    <link rel="stylesheet" th:href="@{/static/css/view.css}"/>
+</head>
+
+<body>
+<!--/*******头部*******/-->
+<div th:replace="common/nav::nav(pageName='')">nav</div>
+
+<!--/*******阅读正文*******/-->
+<div class="content">
+    <div class="mainpart" id="mainpart">
+        <div class="layout02" id="mainPanel">
+            <div class="commonbox2" id="box1">
+                <div class="doctopic">
+                    <h1 th:title="${docBaseInfo.title}">
+                        <img th:src="@{/static/images/}+${docBaseInfo.ext}+'.png'">[[${docBaseInfo.title}]]
+                    </h1>
+                    <div style="float:right;padding: 10px 0;color: #999; padding-right:10px;font-size: 14px;">
+                        格式：[[${docBaseInfo.ext}]]<span style="padding: 0 10px;">|</span>
+                        浏览次数：[[${docBaseInfo.viewCount}]]<span style="padding: 0 10px;">|</span>
+                        上传日期：[[${#calendars.format(docBaseInfo.createTime, 'yyyy-MM-dd hh:mm:ss')}]]
+                    </div>
+                </div>
+            </div>
+            <div class="page-view" id="pageContainer">
+                <div class="outer-page" th:each="i : ${#numbers.sequence(1, docBaseInfo.pages)}" th:id="'outer_page_'+${i }">
+                    <div class="inner-page scrollLoading" th:id="'page_'+${i }">
+                        <div th:id="'swf_'+${i }"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/*******阅读工具条*******/-->
+<div class="reader-tools-bar">
+    <div class="mainpart" style="min-width:720px;">
+        <ul class="left">
+            <li class="paging">
+                <input type="button" title="上一页" class="no-prev" id="prePageButton" />
+                <input type="button" title="下一页" class="nextsmall" id="nextPageButton" />
+            </li>
+            <li class="pages"></li>
+            <li class="text"><input type="text" id="pageNumInput" />&nbsp;/&nbsp;[[${docBaseInfo.pages}]]</li>
+            <li class="btns"><input type="button" id="gotoPageButton" /></li>
+        </ul>
+        <ul class="right">
+            <li title="放大" class="zoomb" id="zoomInButton"></li>
+            <li title="缩小" class="no-zooms" id="zoomOutButton"></li>
+            <li title="全屏显示" class="fullscreen" id="frscreen"></li>
+        </ul>
+    </div>
+</div>
+
+<!--/*******底部*******/-->
+<div th:replace="common/footer">footer</div>
+
+</body>
+<script src="//lib.baomitu.com/jquery/2.2.4/jquery.min.js"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script th:src="@{/static/js/swfobject.js}"></script>
+<script th:src="@{/static/js/scrollFix.js}"></script>
+<script type="text/javascript">
+    var readerConfig = {
+        allPage: '[[${docBaseInfo.pages}]]',
+        productId: '[[${docBaseInfo.id}]]',
+        flashUrl: '[[@{/}]][[${docBaseInfo.swfPath}]]/'
+    };
+</script>
+<script th:src="@{/static/js/view.js}"></script>
+<script type="text/javascript">
+layui.use(['element'], function(){
+    var element = layui.element();
+});
+</script>
+</html>

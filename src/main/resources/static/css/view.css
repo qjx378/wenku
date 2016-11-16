@@ -1,0 +1,255 @@
+@charset "utf-8";
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+}
+a {
+	color: #146c88
+}
+body {background: url(../images/skin-paper.png) repeat;background-attachment: fixed;}
+.header {box-shadow: 0 1px 12px rgba(16, 6, 25, 0.2); z-index: 999;}
+.footer {background-color: #ffffff;}
+.content{
+    margin-right: 0;
+    padding-top: 65px;
+}
+.content .full {width: auto!important;}
+.mainpart {
+    width: 980px;
+    min-width: 980px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+.layout02 {
+    margin: 0 auto;
+}
+.layoutfull,.layout02 {
+    padding: 10px 0;
+    overflow: hidden;
+}
+.commonbox2 {
+    position: relative;
+    zoom: 1;
+    border: solid 1px #ccc;
+    padding: 1px;
+    background: #fffeee;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    margin-bottom: 10px;
+}
+.reader-tools-bar {
+	min-width: 100%;
+	position: fixed;
+    bottom: 0;
+	z-index: 1;
+	height: 35px;
+	border-top: solid 1px #ccc;
+	background-color: #f4f4f4;
+	box-shadow: 0 1px 5px rgba(0,0,0,.3)
+}
+
+.reader-tools-bar .right,.reader-tools-bar .left {
+	float: left;
+	height: 35px;
+	border-right: solid 1px #ccc;
+	padding: 0 10px
+}
+
+.reader-tools-bar li {
+	float: left;
+	height: 26px;
+	background: url(../images/caseshop-icons.png) no-repeat;
+	line-height: 26px
+}
+
+.reader-tools-bar li a {
+	color: #333
+}
+
+.reader-tools-bar li a:hover {
+	color: #33bbd9
+}
+
+
+.reader-tools-bar .left li {
+	margin-top: 2px
+}
+
+.reader-tools-bar .left li.paging {
+	background: none;
+	padding-right: 10px
+}
+
+.reader-tools-bar .left li.paging input {
+	width: 33px;
+	height: 26px;
+	border: none;
+	background: url(../images/caseshop-icons.png);
+	vertical-align: middle;
+	cursor: pointer
+}
+
+.reader-tools-bar .left li input.prevsmall,.reader-tools-bar .left li input.no-prev {
+	background-position: 0 -260px
+}
+
+.reader-tools-bar .left li input.nextsmall,.reader-tools-bar .left li input.no-next {
+	background-position: 0 -312px
+}
+
+.reader-tools-bar .left li input.prevsmall:hover {
+	background-position: 0 -286px
+}
+
+.reader-tools-bar .left li input.nextsmall:hover {
+	background-position: 0 -338px
+}
+
+.reader-tools-bar .left li.pages {
+	background-position: -32px -154px;
+	padding-left: 26px
+}
+
+.reader-tools-bar .left li.text {
+	background: none;
+	margin: 2px 5px 0 0
+}
+
+.reader-tools-bar .left li.text input {
+	width: 33px;
+	border: solid 1px #ccc;
+	background: #fff;
+	vertical-align: middle;
+	text-align: center
+}
+
+.reader-tools-bar .left li.text input:focus {
+	border-color: #f39800
+}
+
+.reader-tools-bar .left li.btns {
+	background: none
+}
+
+.reader-tools-bar .left li.btns input {
+	width: 26px;
+	height: 22px;
+	border: none;
+	background: url(../images/caseshop-icons.png) -32px -106px;
+	vertical-align: middle;
+	cursor: pointer
+}
+
+.reader-tools-bar .left li input.no-prev,.reader-tools-bar .left li input.no-next {
+	opacity: .5;
+	cursor: default
+}
+
+.reader-tools-bar .right li {
+    width: 32px;
+    height: 26px;
+    margin: 4px 5px 0;
+    cursor: pointer
+}
+
+.reader-tools-bar .right li.zoomb,.reader-tools-bar .right li.no-zoomb {
+    background-position: 0 0
+}
+
+.reader-tools-bar .right li.zooms,.reader-tools-bar .right li.no-zooms {
+    background-position: 0 -52px
+}
+
+.reader-tools-bar .right li.zoomb:hover {
+    background-position: 0 -26px
+}
+
+.reader-tools-bar .right li.zooms:hover {
+    background-position: 0 -78px
+}
+
+.reader-tools-bar .right li.fullscreen {
+    background-position: 0 -104px
+}
+
+.reader-tools-bar .right li.fullscreen:hover {
+    background-position: 0 -130px
+}
+
+.reader-tools-bar .right li.escscreen {
+    background-position: 0 -156px
+}
+
+.reader-tools-bar .right li.escscreen:hover {
+    background-position: 0 -182px
+}
+
+.reader-tools-bar .right li.smallimg {
+    background-position: 0 -364px
+}
+
+.reader-tools-bar .right li.smallimg:hover {
+    background-position: 0 -390px
+}
+
+.reader-tools-bar .right li.escsmallimg {
+    background-position: 0 -416px
+}
+
+.reader-tools-bar .right li.escsmallimg:hover {
+    background-position: 0 -442px
+}
+
+.reader-tools-bar .right li.no-zoomb,.reader-tools-bar .right li.no-zooms {
+    opacity: .5;
+    cursor: default
+}
+
+.doctopic {
+	position: relative;
+	overflow: hidden
+}
+
+.doctopic h1 {
+	float: left;
+	padding: 6px;
+	font: 16px/22px "微软雅黑";
+	color: #666
+}
+
+.doctopic h1 img {
+	float: left;
+	width: 24px;
+	height: 24px;
+	margin: 0 6px 0 0
+}
+
+div.inner-page {
+	line-height: 100%;
+	margin: 0 auto;
+	text-align: center;
+	display: block;
+	vertical-align: middle;
+	background: url(../images/page-loading.gif) no-repeat center;
+	height: 1200px;
+	padding: 5px
+}
+
+div.inner-page .swf {
+	width: 100%;
+	height: 100%;
+	visibility: visible
+}
+
+.page-view {}
+.page-view .outer-page {
+	position: relative;
+	border: 1px solid #c7c7c7;
+	margin-bottom: 20px;
+	text-align: center;
+	overflow: hidden;
+	background-color: #fff;
+	box-shadow: 0 0 3px #ccc
+}
