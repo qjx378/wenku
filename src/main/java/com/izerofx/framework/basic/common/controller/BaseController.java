@@ -60,8 +60,7 @@ public abstract class BaseController {
         }
         pageNo = pageNo == 0 ? 0 : pageNo - 1;
         pageSize = pageSize == 0 ? 10 : pageSize;
-        Pageable page = new PageRequest(pageNo, pageSize);
-        return page;
+        return new PageRequest(pageNo, pageSize);
     }
 
     /**
